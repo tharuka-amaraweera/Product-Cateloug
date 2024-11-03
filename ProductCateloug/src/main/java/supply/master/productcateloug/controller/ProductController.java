@@ -1,10 +1,12 @@
 package supply.master.productcateloug.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import supply.master.productcateloug.dto.ErrorResponse;
+import supply.master.productcateloug.dto.PageResponse;
 import supply.master.productcateloug.model.Product;
 import supply.master.productcateloug.service.ProductService;
 import supply.master.productcateloug.util.Constants;
@@ -25,8 +27,8 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public PageResponse<Product> getAllProducts(Pageable pageable) {
+        return productService.getAllProducts(pageable);
     }
 
     @GetMapping("/{id}")
