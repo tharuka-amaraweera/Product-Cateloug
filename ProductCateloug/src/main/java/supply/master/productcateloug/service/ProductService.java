@@ -2,10 +2,14 @@ package supply.master.productcateloug.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import supply.master.productcateloug.dto.ErrorResponse;
 import supply.master.productcateloug.dto.PageResponse;
+import supply.master.productcateloug.exception.SPMException;
 import supply.master.productcateloug.model.Product;
 import supply.master.productcateloug.repository.ProductRepository;
+import supply.master.productcateloug.util.ErrorConstants;
 import supply.master.productcateloug.util.PageResponseMapper;
 
 import java.util.List;
@@ -28,14 +32,27 @@ public class ProductService {
         return PageResponseMapper.toPageResponse(productRepository.findAll(pageable));
     }
     public Optional<Product> getProductById(String id) {
-        return productRepository.findById(id);
+        //findById returns entire entity if exists
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isPresent()){
+            return product;
+        }else {
+            throw new SPMException(new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                    HttpStatus.NOT_FOUND.getReasonPhrase(),
+                    ErrorConstants.ErrorMessages.PRODUCTNOTFOUND,
+                    ErrorConstants.ErrorCodes.PRODUCTNOTFOUND));
+        }
     }
     public boolean deleteProduct(String id) {
+        //existsById returns a boolean value indicating the existence
         if(productRepository.existsById(id)) {
             productRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new SPMException(new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ErrorConstants.ErrorMessages.PRODUCTNOTFOUND,
+                ErrorConstants.ErrorCodes.PRODUCTNOTFOUND));
     }
 
     public List<Product> getProductByCategoryId(Long categoryId) {

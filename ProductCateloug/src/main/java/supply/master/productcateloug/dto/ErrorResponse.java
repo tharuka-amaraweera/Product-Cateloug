@@ -19,4 +19,11 @@ public class ErrorResponse {
         this.message = message;
         this.errorCode = errorCode;
     }
+
+    public ErrorResponse(int status, String error, String message) {
+        this.timestamp = LocalDateTime.now();
+        this.status = status;
+        this.error = error;
+        this.message = message;
+    }
 }
