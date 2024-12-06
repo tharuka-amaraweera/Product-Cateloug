@@ -1,0 +1,45 @@
+name: Build Product Catalog Application
+on:
+  push:
+    branches:
+      - dev # Trigger the pipeline when changes are pushed to the 'dev' branch.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use a Linux-based environment.
+
+    steps:
+    # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+    # Step 2: Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+    # Step 3: Cache Maven dependencies
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+
+    # Step 4: Build the application
+      - name: Build with Maven
+        run: mvn clean install
+
+    # Step 5: Run Tests
+      - name: Run Tests
+        run: mvn test
+
+    # Step 6: Archive the JAR file as an artifact
+      - name: Save Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'product-catalog-jar'
+          path: target/*.jar
+
