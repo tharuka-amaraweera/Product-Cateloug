@@ -16,10 +16,10 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @PostMapping
-    public Product cretaeProduct(@RequestBody Product product) {
+    public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
@@ -44,6 +44,6 @@ public class ProductController {
         return productService.getProductByCategoryId(categoryId);
     }
 
-    //Todo: add another controller to add list of products at once
+    //Todo: add an endpoint to add list of products at once
 
 }
